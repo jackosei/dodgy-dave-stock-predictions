@@ -30,8 +30,10 @@ A fun, tongue-in-cheek web application that generates humorous AI-powered stock 
 2. **Set up environment variables:**
    Create a `.env` file in the root directory:
    ```
-   POLYGON_API_KEY=your_polygon_api_key_here
+   VITE_POLYGON_API_KEY=your_polygon_api_key_here
    ```
+   
+   **Note:** In Vite, environment variables must be prefixed with `VITE_` to be exposed to client-side code.
 
 3. **Start the development server:**
    ```bash
@@ -69,8 +71,22 @@ dodgy-dave-stock-predictions/
 - **Polygon.io API**: Requires an API key for stock data fetching
 - **OpenAI API Worker**: Cloudflare Worker endpoint at `https://openai-api-worker.guil-9d2.workers.dev`
 
+## Deployment (Netlify)
+
+When deploying to Netlify:
+
+1. **Set environment variables in Netlify:**
+   - Go to your site settings → Environment variables
+   - Add `VITE_POLYGON_API_KEY` with your Polygon.io API key
+   - Make sure to redeploy after adding the variable
+
+2. **Build settings:**
+   - Build command: `npm run build`
+   - Publish directory: `dist`
+
 ## Notes
 
 - The app fetches stock data for the past 3 days (configurable in `utils/dates.js`)
 - Reports are limited to 150 words and styled with humorous, exaggerated language
 - The app handles errors gracefully with user-friendly messages
+- Environment variables in Vite must use `import.meta.env.VITE_*` syntax
