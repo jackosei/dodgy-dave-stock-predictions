@@ -39,9 +39,18 @@ const apiMessage = document.getElementById('api-message')
 async function fetchStockData() {
     document.querySelector('.action-panel').style.display = 'none'
     loadingArea.style.display = 'flex'
+    
+    const apiKey = import.meta.env.VITE_POLYGON_API_KEY
+    
+    if (!apiKey) {
+        loadingArea.innerText = 'API key not configured. Please set VITE_POLYGON_API_KEY in your environment variables.'
+        console.error('VITE_POLYGON_API_KEY is undefined')
+        return
+    }
+    
     try {
         const stockData = await Promise.all(tickersArr.map(async (ticker) => {
-            const url = `https://api.polygon.io/v2/aggs/ticker/${ticker}/range/1/day/${dates.startDate}/${dates.endDate}?apiKey=${import.meta.env.VITE_POLYGON_API_KEY}`
+            const url = `https://api.polygon.io/v2/aggs/ticker/${ticker}/range/1/day/${dates.startDate}/${dates.endDate}?apiKey=${apiKey}`
             const response = await fetch(url)
             const data = await response.json()
             const status = await response.status
@@ -51,7 +60,8 @@ async function fetchStockData() {
                 delete data.request_id
                 return JSON.stringify(data)
             } else {
-                loadingArea.innerText = 'There was an error fetching stock data.'
+                loadingArea.innerText = `Error: ${data.error || 'There was an error fetching stock data.'}`
+                console.error('API Error:', data)
             }
         }))
         fetchReport(stockData.join(''))
@@ -80,7 +90,7 @@ async function fetchReport(data) {
     ]
     
     try {
-        const url = 'https://openai-api-worker.guil-9d2.workers.dev'
+        const url = 'https://openai-api-worker.jackosei5646.workers.dev/'
         
         const response = await fetch(url, {
             method: 'POST',
